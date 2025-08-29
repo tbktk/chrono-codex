@@ -10,6 +10,7 @@ export interface ITimeLogRepository {
   /**
    * 新しいタイムログを作成する。
    * @param data 作成タイムログのデータ（IDは自動生成されるため含まない）
+   * @returns 作成されたタイムログ
    */
   create(data: Omit<TimeLog, 'id'>): Promise<TimeLog>;
   /**

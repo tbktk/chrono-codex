@@ -1,14 +1,21 @@
 import { NextResponse } from 'next/server';
+import { SQLiteTimeLogRepository } from '@/infrastructure/repositories/SQLiteTimeLogRepository';
+import { CreateTimeLogCommand } from '@/domain/services/ITimeLogCommandService';
+
+const timeLogRepository = new SQLiteTimeLogRepository();
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as CreateTimeLogCommand;
 
-    // TODO: このデータをサービス層に渡してデータベースに保存する
-    console.log('Received time log:', body);
+    // サービス層を介するのが理想だが、まずは直接リポジトリを呼び出す
+    const newTimeLog = await timeLogRepository.create({
+      description: body.description,
+      startTime: body.startTime,
+      endTime: body.endTime,
+    });
 
-    // 一旦、成功したことにして受け取ったデータをそのまま返す
-    return NextResponse.json(body, { status: 201 });
+    return NextResponse.json(newTimeLog, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to create time log' }, { status: 500 });
   }
