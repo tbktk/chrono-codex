@@ -13,7 +13,9 @@ export default function HomePage() {
         <div className="mt-8">
           <Link
             href="/timelogs/new"
-            className="inline-block px-6 py-3 text-lg font-semibold text-white bg-indigo-600 rounded-md shadow-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition"
+            className="inline-block px-6 py-3 text-lg font-semibold text-white bg-indigo-600
+              rounded-md shadow-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500
+              focus:ring-offset-2 transition"
           >
             Create Your First Time Log
           </Link>
