@@ -33,8 +33,7 @@ export interface ITimeLogRepository {
   update(id: string, data: Partial<Omit<TimeLog, 'id'>>): Promise<TimeLog>;
   /**
    * 指定したIDのタイムログを削除する。
-   * @param id 削除するタイムログのID
    * @returns 削除が成功した場合はtrue、失敗した場合はfalse
    */
-  delete(id: string): Promise<boolean>;
+  delete(id: string): Promise<void>;
 }

@@ -24,7 +24,15 @@ export class SQLiteTimeLogRepository implements ITimeLogRepository {
       driver: sqlite3.Database
     });
 
-    // TODO: テーブルが存在しない場合に作成する処理をここに追加する
+    // テーブルが存在しな場合、テーブル作成のSQLを実行
+    await this.db.exec(`
+      CREATE TABLE IF NOT EXISTS timelogs (
+        id TEXT PRIMARY KEY,
+        description TEXT NOT NULL,
+        startTime TEXT NOT NULL,
+        endTime TEXT NOT NULL
+      )
+    `);
 
     return this.db;
   }
@@ -36,9 +44,12 @@ export class SQLiteTimeLogRepository implements ITimeLogRepository {
    */
   async create(timeLog: Omit<TimeLog, 'id'>): Promise<TimeLog> {
     const db = await this.openDb();
-    const id = randomUUID(); // IDを生成
+    const newId = randomUUID(); // IDを生成
 
-    const newTimeLog = { id, ...timeLog };
+    const newTimeLog: TimeLog = {
+      id: newId,
+      ...timeLog,
+    };
 
     // SQLインジェクションを防ぐため、値はプレースホルダで渡す
     await db.run(
@@ -57,8 +68,18 @@ export class SQLiteTimeLogRepository implements ITimeLogRepository {
    * @returns 検索結果のタイムログ、存在しない場合はnull
    */
   async findById(id: string): Promise<TimeLog | null> {
-    // ...実装は後ほど
-    throw new Error('Method not implemented.');
+    const db = await this.openDb();
+    const row = await db.get('SELECT * FROM timelogs WHERE id = ?', id);
+
+    if (!row) return null;
+
+    // DBから取得したデータをTimeLog型に変換して返す
+    return {
+      id: row.id,
+      description: row.description,
+      startTime: new Date(row.startTime),
+      endTime: new Date(row.endTime),
+    };
   }
 
   /**
@@ -66,8 +87,16 @@ export class SQLiteTimeLogRepository implements ITimeLogRepository {
    * @returns すべてのタイムログの配列
    */
   async findAll(): Promise<TimeLog[]> {
-    // ...実装は後ほど
-    throw new Error('Method not implemented.');
+    const db = await this.openDb();
+    const rows = await db.all('SELECT * FROM timelogs ORDER BY startTime DESC');
+
+    // 取得した全データをTimeLog型に変換して返す
+    return rows.map(row => ({
+      id: row.id,
+      description: row.description,
+      startTime: new Date(row.startTime),
+      endTime: new Date(row.endTime),
+    }));
   }
 
   /**
@@ -77,17 +106,41 @@ export class SQLiteTimeLogRepository implements ITimeLogRepository {
    * @returns 更新後のタイムログ
    */
   async update(id: string, data: Partial<Omit<TimeLog, 'id'>>): Promise<TimeLog> {
-    // ...実装は後ほど
-    throw new Error('Method not implemented.');
+    const db = await this.openDb();
+
+    // 更新するフィールドと値を動的に構築
+    const fields = Object.keys(data);
+    const values = Object.values(data);
+    const setClause = fields.map(field => `${field} = ?`).join(', ');
+
+    if (fields.length === 0) {
+      // 更新するデータがない場合は、現在のデータをそのまま返す
+      return this.findById(id).then(log => {
+        if (!log) throw new Error('Time log not found');
+        return log;
+      });
+    }
+
+    // データベースを更新
+    await db.run(
+      `UPDATE timelogs SET ${setClause} WHERE id = ?`,
+      ...values,
+      id,
+    );
+
+    // 更新後の最新データを取得して返す
+    const updatedLog = await this.findById(id);
+    if (!updatedLog) throw new Error('Failed to fetch updated time log');
+
+    return updatedLog;
   }
 
   /**
    * 指定したIDのタイムログを削除する。
    * @param id 削除するタイムログのID
-   * @returns 削除が成功した場合はtrue、失敗した場合はfalse
    */
-  async delete(id: string): Promise<boolean> {
-    // ...実装は後ほど
-    throw new Error('Method not implemented.');
+  async delete(id: string): Promise<void> {
+    const db = await this.openDb();
+    await db.run('DELETE FROM timelogs WHERE id = ?', id);
   }
 }
