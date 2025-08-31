@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 import type { TimeLog } from '@/domain/models/timeLog';
 
@@ -44,13 +45,15 @@ export default function TimeLogPage() {
       <div className="space-y-4">
         {timeLogs.length > 0 ? (
           timeLogs.map((log) => (
-            <div key={log.id} className="p-4 border rounded-md shadow-sm bg-white">
-              <p className="font-semibold text-gray-800">{log.description}</p>
-              <div className="text-sm text-gray-500 mt-2">
-                <p>Start: {new Date(log.startTime).toLocaleString()}</p>
-                <p>End: {new Date(log.endTime).toLocaleString()}</p>
+            <Link href={`/timelogs/${log.id}`} key={log.id} className="block hover:bg-gray-50">
+              <div className="p-4 border rounded-md shadow-sm bg-white">
+                <p className="font-semibold text-gray-800">{log.description}</p>
+                <div className="text-sm text-gray-500 mt-2">
+                  <p>Start: {new Date(log.startTime).toLocaleString()}</p>
+                  <p>End: {new Date(log.endTime).toLocaleString()}</p>
+                </div>
               </div>
-            </div>
+            </Link>
           ))
         ) : (
           <p>No time logs found. Create one!</p>
