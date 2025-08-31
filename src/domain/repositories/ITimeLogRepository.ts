@@ -10,6 +10,7 @@ export interface ITimeLogRepository {
   /**
    * 新しいタイムログを作成する。
    * @param data 作成タイムログのデータ（IDは自動生成されるため含まない）
+   * @returns 作成されたタイムログ
    */
   create(data: Omit<TimeLog, 'id'>): Promise<TimeLog>;
   /**
@@ -32,8 +33,7 @@ export interface ITimeLogRepository {
   update(id: string, data: Partial<Omit<TimeLog, 'id'>>): Promise<TimeLog>;
   /**
    * 指定したIDのタイムログを削除する。
-   * @param id 削除するタイムログのID
    * @returns 削除が成功した場合はtrue、失敗した場合はfalse
    */
-  delete(id: string): Promise<boolean>;
+  delete(id: string): Promise<void>;
 }
