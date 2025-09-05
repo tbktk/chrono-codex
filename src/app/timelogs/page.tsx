@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 import type { TimeLog } from '@/domain/models/timeLog';
 
-export default function TimeLogPage() {
+const TimeLogPage = () => {
   const [timeLogs, setTimeLogs] = useState<TimeLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,4 +61,6 @@ export default function TimeLogPage() {
       </div>
     </main>
   );
-}
+};
+
+export default TimeLogPage;

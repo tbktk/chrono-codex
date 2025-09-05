@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function TimeLogPage() {
+const TimeLogPage = () => {
   const [description, setDescription] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -93,4 +93,6 @@ export default function TimeLogPage() {
       </form>
     </main>
   );
-}
+};
+
+export default TimeLogPage;
