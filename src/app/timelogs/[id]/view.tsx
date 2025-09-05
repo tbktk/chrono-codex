@@ -47,10 +47,19 @@ const TimeLogDetailView = ({ id }: Props) => {
   }
 
   return (
-    <main className="p-6 border rounded-md shadow-sm bg-white">
-      <Link href="/timelogs" className="text-indigo-600 hover:underline mb-4 inline-block">
-        &larr; Back to all logs
-      </Link>
+    <main className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-4">
+        <Link href="/timelogs" className="text-indigo-600 hover:underline">
+          &larr; Back to all logs
+        </Link>
+        <Link
+          href={`/timelogs/${timeLog.id}/edit`}
+          className="inline-block px-4 py-2 text-sm font-semibold text-white bg-indigo-600
+            rounded-md shadow-sm hover:bg-indigo-700"
+        >
+          Edit
+        </Link>
+      </div>
       <div className="p-6 border rounded-md shadow-sm bg-white">
         <h1 className="text-2xl font-bold text-gray-900 mb-4">{timeLog.description}</h1>
         <div className="text-sm text-gray-600 space-y-2">
