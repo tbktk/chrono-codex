@@ -1,8 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { ja } from 'date-fns/locale/ja'; // 日本語ロケールをインポート
 import { TimeLog } from '@/domain/models/timeLog';
-import { formatDateForInput } from '@/utils/date';
+// import { formatDateForInput } from '@/utils/date';
+
+registerLocale('ja', ja); // 日本語ロケールを登録
 
 type Props = {
   initialData?: Omit<TimeLog, 'id'> & { id?: string }; // 編集時は初期データを受け取る
@@ -14,15 +18,21 @@ type Props = {
 const TimeLogForm = ({ initialData, onSubmit, buttonText, isSaving = false }: Props) => {
   // フォームの状態を管理
   const [description, setDescription] = useState(initialData?.description || '');
-  const [startTime, setStartTime] = useState(formatDateForInput(initialData?.startTime) || '');
-  const [endTime, setEndTime] = useState(formatDateForInput(initialData?.endTime) || '');
+  // const [startTime, setStartTime] = useState(formatDateForInput(initialData?.startTime) || '');
+  // const [endTime, setEndTime] = useState(formatDateForInput(initialData?.endTime) || '');
+  const [startTime, setStartTime] = useState<Date | null>(initialData?.startTime || null);
+  const [endTime, setEndTime] = useState<Date | null>(initialData?.endTime || null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!startTime || !endTime) {
+      alert('Please select both start and end times.');
+      return;
+    }
     onSubmit({
       description,
-      startTime: new Date(startTime),
-      endTime: new Date(endTime),
+      startTime,
+      endTime,
     });
   };
 
@@ -46,28 +56,39 @@ const TimeLogForm = ({ initialData, onSubmit, buttonText, isSaving = false }: Pr
         <label htmlFor="startTime" className="block text-sm font-medium text-gray-700">
           Start Time
         </label>
-        <input
-          type="datetime-local"
-          id="startTime"
-          value={startTime}
-          onChange={(e) => setStartTime(e.target.value)}
+        <DatePicker
+          selected={startTime}
+          onChange={(date) => setStartTime(date)}
+          locale="ja"
+          showTimeSelect
+          timeIntervals={15}
+          timeCaption="Time"
+          dateFormat="yyyy/MM/dd HH:mm"
+          isClearable
+          todayButton="Today"
           required
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm
             focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          wrapperClassName='w-full'
         />
       </div>
       <div>
         <label htmlFor="endTime" className="block text-sm font-medium text-gray-700">
           End Time
         </label>
-        <input
-          type="datetime-local"
-          id="endTime"
-          value={endTime}
-          onChange={(e) => setEndTime(e.target.value)}
-          required
+        <DatePicker
+          selected={endTime}
+          onChange={(date) => setEndTime(date)}
+          locale="ja"
+          showTimeSelect
+          timeIntervals={15}
+          timeCaption="Time"
+          dateFormat="yyyy/MM/dd HH:mm"
+          isClearable
+          todayButton="Today"
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm
             focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          wrapperClassName='w-full'
         />
       </div>
       <button
