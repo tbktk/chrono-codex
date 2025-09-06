@@ -2,39 +2,16 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useState, useEffect, useTransition } from 'react';
+import React, { useState } from 'react';
 import { TimeLog } from '@/domain/models/timeLog';
 
 type Props = {
-  id: string;
+  timeLog: TimeLog;
 };
 
-const TimeLogDetailView = ({ id }: Props) => {
-  const [timeLog, setTimeLog] = useState<TimeLog | null>(null);
+const TimeLogDetailView = ({ timeLog }: Props) => {
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, startLoadingTransition] = useTransition();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!id) return ;
-
-    const fetchTimeLog = async () => {
-      startLoadingTransition(async () => {
-        try {
-          const response = await fetch(`/api/timelogs/${id}`);
-          if (!response.ok) {
-            throw new Error('Failed to fetch time log');
-          }
-          const data = await response.json();
-          setTimeLog(data);
-        } catch (error) {
-          setError(error instanceof Error ? error.message : 'An unknown error occurred');
-        }
-      });
-    };
-
-    fetchTimeLog();
-  }, [id]); // idが変更されるたびに実行される
 
   const handleDelete = async () => {
     // ユーザーに最終確認を求める
@@ -43,7 +20,7 @@ const TimeLogDetailView = ({ id }: Props) => {
     }
 
     try {
-      const response = await fetch(`/api/timelogs/${id}`, {
+      const response = await fetch(`/api/timelogs/${timeLog.id}`, {
         method: 'DELETE',
       });
 
@@ -59,10 +36,6 @@ const TimeLogDetailView = ({ id }: Props) => {
       alert('Error deleting time log');
     }
   };
-
-  if (isLoading) {
-    return <div className="container mx-auto p-4">Loading...</div>;
-  }
 
   if (error) {
     return <div className="container mx-auto p-4 text-red-500">Error: {error}</div>;
