@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { TimeLog } from '@/domain/models/timeLog';
 import TimeLogForm from '@/components/TimeLogForm';
@@ -13,24 +13,24 @@ const EditTimeLogView = ({ id }: Props) => {
   const router = useRouter();
 
   const [initialData, setInitialData] = useState<TimeLog | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, startLoadingTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   // 1. 最初に既存のデータを取得してフォームにセット
   useEffect(() => {
     if (!id) return;
 
-    const fetchTimeLog = async () => {
-      try {
-        const response = await fetch(`/api/timelogs/${id}`);
-        if (!response.ok) throw new Error('Failed to fetch time log');
-        setInitialData(await response.json());
-      } catch (error) {
-        console.error(error);
-        setError(error instanceof Error ? error.message : 'An error occurred');
-      } finally {
-        setIsLoading(false);
-      }
+    const fetchTimeLog = () => {
+      startLoadingTransition(async () => {
+        try {
+          const response = await fetch(`/api/timelogs/${id}`);
+          if (!response.ok) throw new Error('Failed to fetch time log');
+          setInitialData(await response.json());
+        } catch (error) {
+          console.error(error);
+          setError(error instanceof Error ? error.message : 'An error occurred');
+        }
+      });
     };
 
     fetchTimeLog();

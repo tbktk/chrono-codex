@@ -1,31 +1,31 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import Link from 'next/link';
 
 import type { TimeLog } from '@/domain/models/timeLog';
 
 const TimeLogPage = () => {
   const [timeLogs, setTimeLogs] = useState<TimeLog[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, startLoadingTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // ページが読み込まれたらAPIからデータを取得
     const fetchTimeLogs = async () => {
-      try {
-        const response = await fetch('/api/timelogs');
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
+      startLoadingTransition(async () => {
+        try {
+          const response = await fetch('/api/timelogs');
+          if (!response.ok) {
+            throw new Error('Failed to fetch data');
+          }
+          const data = await response.json();
+          setTimeLogs(data);
+        } catch (error) {
+          console.error('Failed to fetch time logs:', error);
+          setError(error instanceof Error ? error.message : 'An unknown error occurred');
         }
-        const data = await response.json();
-        setTimeLogs(data);
-      } catch (error) {
-        console.error('Failed to fetch time logs:', error);
-        setError(error instanceof Error ? error.message : 'An unknown error occurred');
-      } finally {
-        setIsLoading(false);
-      }
+      });
     };
 
     fetchTimeLogs();

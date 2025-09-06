@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default function HomePage() {
+const HomePage = () => {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
       <div className="text-center p-8">
@@ -23,4 +23,6 @@ export default function HomePage() {
       </div>
     </main>
   );
-}
+};
+
+export default HomePage;
