@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { ja } from 'date-fns/locale/ja'; // 日本語ロケールをインポート
 import { TimeLog } from '@/domain/models/timeLog';
-// import { formatDateForInput } from '@/utils/date';
 
 registerLocale('ja', ja); // 日本語ロケールを登録
 
@@ -18,8 +17,6 @@ type Props = {
 const TimeLogForm = ({ initialData, onSubmit, buttonText, isSaving = false }: Props) => {
   // フォームの状態を管理
   const [description, setDescription] = useState(initialData?.description || '');
-  // const [startTime, setStartTime] = useState(formatDateForInput(initialData?.startTime) || '');
-  // const [endTime, setEndTime] = useState(formatDateForInput(initialData?.endTime) || '');
   const [startTime, setStartTime] = useState<Date | null>(initialData?.startTime || null);
   const [endTime, setEndTime] = useState<Date | null>(initialData?.endTime || null);
 

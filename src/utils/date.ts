@@ -4,7 +4,7 @@
  * @param date 変換するDateオブジェクト
  * @returns 'YYYY-MM-DDTHH:mm'形式の文字列
  */
-export const formatDateForInput = (date: Date | undefined): string => {
+export const formatDateForInput = (date: Date | null): string => {
   if (!date) return '';
   return new Date(date).toISOString().slice(0, 16);
 };
