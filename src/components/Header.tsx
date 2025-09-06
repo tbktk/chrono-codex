@@ -14,6 +14,9 @@ const Header = () => {
           📖 ChronoCodex
         </Link>
         <div className="flex items-center gap-4">
+          <Link href="/dashboard" className="text-gray-600 hover:text-indigo-600">
+            Dashboard
+          </Link>
           <Link href="/timelogs" className="text-gray-600 hover:text-indigo-600">
             Time Logs
           </Link>
