@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { Header } from '@/components/Header';
+import AuthProvider from '@/components/AuthProvider';
+import Header from '@/components/Header';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,8 +18,10 @@ const RootLayout = ({ children }: Readonly<{ children: React.ReactNode; }>) => {
         suppressHydrationWarning
         className={inter.className}
       >
-        <Header />
-        <main>{children}</main>
+        <AuthProvider>
+          <Header />
+          <main>{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );
