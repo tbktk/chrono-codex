@@ -30,7 +30,7 @@ export class SQLiteTimeLogRepository implements ITimeLogRepository {
         id TEXT PRIMARY KEY,
         description TEXT NOT NULL,
         startTime TEXT NOT NULL,
-        endTime TEXT NOT NULL
+        endTime TEXT NOT NULL,
       )
     `);
 
