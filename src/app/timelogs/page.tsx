@@ -7,8 +7,8 @@ import type { TimeLog } from '@/domain/models/timeLog';
 
 const TimeLogPage = () => {
   const [timeLogs, setTimeLogs] = useState<TimeLog[]>([]);
-  const [isLoading, startLoadingTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, startLoadingTransition] = useTransition();
 
   useEffect(() => {
     // ページが読み込まれたらAPIからデータを取得
