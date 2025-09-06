@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import { TimeLog } from '@/domain/models/timeLog';
 
 type Props = {
@@ -11,26 +11,26 @@ type Props = {
 
 const TimeLogDetailView = ({ id }: Props) => {
   const [timeLog, setTimeLog] = useState<TimeLog | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, startLoadingTransition] = useTransition();
   const router = useRouter();
 
   useEffect(() => {
     if (!id) return ;
 
     const fetchTimeLog = async () => {
-      try {
-        const response = await fetch(`/api/timelogs/${id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch time log');
+      startLoadingTransition(async () => {
+        try {
+          const response = await fetch(`/api/timelogs/${id}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch time log');
+          }
+          const data = await response.json();
+          setTimeLog(data);
+        } catch (error) {
+          setError(error instanceof Error ? error.message : 'An unknown error occurred');
         }
-        const data = await response.json();
-        setTimeLog(data);
-      } catch (error) {
-        setError(error instanceof Error ? error.message : 'An unknown error occurred');
-      } finally {
-        setIsLoading(false);
-      }
+      });
     };
 
     fetchTimeLog();
