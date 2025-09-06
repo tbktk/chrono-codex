@@ -9,8 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@types/react-datepicker": "^6.2.0",
     "next": "15.5.2",
     "react": "19.1.1",
+    "react-datepicker": "^8.7.0",
     "react-dom": "19.1.1",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
