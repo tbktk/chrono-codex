@@ -8,8 +8,9 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string }}
 ) {
+  const { id } = await params;
   try {
-    const timeLog = await timeLogRepository.findById(params.id);
+    const timeLog = await timeLogRepository.findById(id);
 
     if (!timeLog) {
       return NextResponse.json({ error: 'Time log not found' }, { status: 404 });
@@ -26,9 +27,10 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const { id } = await params;
   try {
     const body = (await request.json()) as Partial<CreateTimeLogCommand>;
-    const updatedLog = await timeLogRepository.update(params.id, body);
+    const updatedLog = await timeLogRepository.update(id, body);
     return NextResponse.json(updatedLog);
   } catch (error) {
     console.error(error);
@@ -40,8 +42,9 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const { id } = await params;
   try {
-    await timeLogRepository.delete(params.id);
+    await timeLogRepository.delete(id);
     // 成功したが返すコンテンツがないことを示す204ステータス
     return NextResponse.json(null, { status: 204 });
   } catch (error) {
